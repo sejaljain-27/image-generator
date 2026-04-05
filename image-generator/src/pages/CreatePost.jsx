@@ -14,7 +14,29 @@ const CreatePost = () => {
   const [generatingImg, setGeneratingImg] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
 
-  const handleSubmit = (e) => {};
+  const handleSubmit = async(e) => {
+    e.preventDefault();
+    if(form.prompt && form.photo){
+      setLoading(true);
+      try{const response=await fetch("http://localhost:8080/api/v1/post",{
+        method:"POST",
+        headers:{
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(form)
+      })
+      const data = await response.json();
+      setLoading(false);
+      alert("Post created successfully!");
+      navigate("/");
+    }catch(error){
+      setLoading(false);
+      alert("Error creating post. Please try again.");
+    }
+  }
+  else{    alert("Please enter a prompt and generate an image.");
+  }
+};
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -45,7 +67,7 @@ const CreatePost = () => {
         alert(error);
       }
     }
-  }; // ✅ FIXED: closed function properly
+  }; // FIXED: closed function properly
 
   return (
     <section className="max-w-7xl mx-auto">
